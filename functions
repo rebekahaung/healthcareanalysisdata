@@ -1,11 +1,15 @@
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
 # defines the average treatment by cost
 def average_treatment_cost_by_disease(file_path):
     df = pd.read_csv(file_path)
 
-    if 'Disease' not in df.columns or 'Treatment_Cost' not in df.columns:
+    if 'Medical Condition' not in df.columns or 'Billing Amount' not in df.columns:
         raise ValueError("The dataset must contain 'Disease' and 'Treatment_Cost' columns.")
 
-    average_costs = df.groupby('Disease')['Treatment_Cost'].mean()
+    average_costs = df.groupby('Medical Condition')['Billing Amount'].mean()
 
     print("Average Treatment Cost by Disease:")
     print(average_costs)
@@ -16,10 +20,10 @@ def average_treatment_cost_by_disease(file_path):
 def identify_high_risk_patients(file_path, disease, age_threshold=60):
     df = pd.read_csv(file_path)
 
-    if 'Disease' not in df.columns or 'Age' not in df.columns:
+    if 'Medical Condition' not in df.columns or 'Age' not in df.columns:
         raise ValueError("The dataset must contain 'Disease' and 'Age' columns.")
 
-    high_risk_patients = df[(df['Disease'] == disease) & (df['Age'] > age_threshold)]
+    high_risk_patients = df[(df['Medical Condition'] == disease) & (df['Age'] > age_threshold)]
 
     print(f"High-Risk Patients for {disease}:")
     print(high_risk_patients)
@@ -27,18 +31,30 @@ def identify_high_risk_patients(file_path, disease, age_threshold=60):
     return high_risk_patients
 
 
-# correlation between treatment duration and outcome
-def correlation_treatment_duration_outcome(file_path):
+# correlation between insurance provider and cost of treatment
+def analyze_billing_by_insurance_provider(file_path):
     df = pd.read_csv(file_path)
 
-    if 'Treatment_Duration' not in df.columns or 'Outcome' not in df.columns:
-        raise ValueError("The dataset must contain 'Treatment_Duration' and 'Outcome' columns.")
+    # Check if required columns exist
+    if 'Insurance Provider' not in df.columns or 'Billing Amount' not in df.columns:
+        raise ValueError("The dataset must contain Insurance Provider and Billing Amount columns.")
 
-    correlation = df['Treatment_Duration'].corr(df['Outcome'])
+    # Group by Insurance Provider and calculate mean Billing Amount
+    billing_summary = df.groupby('Insurance Provider')['Billing Amount'].mean().reset_index()
 
-    print(f"Correlation between Treatment Duration and Outcome: {correlation:.2f}")
+    print("Average Billing Amount by Insurance Provider:")
+    print(billing_summary)
 
-    return correlation
+    # Plotting the results
+    plt.figure(figsize=(10, 6))
+    sns.barplot(x='Insurance Provider', y='Billing Amount', data=billing_summary)
+    plt.title('Average Billing Amount by Insurance Provider')
+    plt.ylabel('Average Billing Amount')
+    plt.xlabel('Insurance Provider')
+    plt.xticks(rotation=45)
+    plt.show()
+
+    return billing_summary
 
 
 # driver code
@@ -46,7 +62,7 @@ def correlation_treatment_duration_outcome(file_path):
 def main():
     file_path = 'healthcare_dataset.csv'
 
-    print("\n--- Average Treatment Cost by Disease ---")
+    print("\n--- Average Treatment Age by Disease ---")
     try:
         print(average_treatment_cost_by_disease(file_path))
     except ValueError as e:
@@ -60,12 +76,13 @@ def main():
     except ValueError as e:
         print(e)
 
-    print("\n--- Correlation Between Treatment Duration and Outcome ---")
+    print("\n--- Analyze billuing by insurance provider ---")
     try:
-        correlation = correlation_treatment_duration_outcome(file_path)
+        correlation = analyze_billing_by_insurance_provider(file_path)
         print(f"Correlation: {correlation:.2f}")
     except ValueError as e:
         print(e)
+
 
 if __name__ == "__main__":
     main()
