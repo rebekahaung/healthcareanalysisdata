@@ -1,0 +1,41 @@
+# defines the average treatment by cost
+def average_treatment_cost_by_disease(file_path):
+    df = pd.read_csv(file_path)
+
+    if 'Disease' not in df.columns or 'Treatment_Cost' not in df.columns:
+        raise ValueError("The dataset must contain 'Disease' and 'Treatment_Cost' columns.")
+
+    average_costs = df.groupby('Disease')['Treatment_Cost'].mean()
+
+    print("Average Treatment Cost by Disease:")
+    print(average_costs)
+
+    return average_costs
+
+#identifying high risk patients for a specific disease
+def identify_high_risk_patients(file_path, disease, age_threshold=60):
+    df = pd.read_csv(file_path)
+
+    if 'Disease' not in df.columns or 'Age' not in df.columns:
+        raise ValueError("The dataset must contain 'Disease' and 'Age' columns.")
+
+    high_risk_patients = df[(df['Disease'] == disease) & (df['Age'] > age_threshold)]
+
+    print(f"High-Risk Patients for {disease}:")
+    print(high_risk_patients)
+
+    return high_risk_patients
+
+
+# correlation between treatment duration and outcome
+def correlation_treatment_duration_outcome(file_path):
+    df = pd.read_csv(file_path)
+
+    if 'Treatment_Duration' not in df.columns or 'Outcome' not in df.columns:
+        raise ValueError("The dataset must contain 'Treatment_Duration' and 'Outcome' columns.")
+
+    correlation = df['Treatment_Duration'].corr(df['Outcome'])
+
+    print(f"Correlation between Treatment Duration and Outcome: {correlation:.2f}")
+
+    return correlation
