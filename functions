@@ -39,3 +39,34 @@ def correlation_treatment_duration_outcome(file_path):
     print(f"Correlation between Treatment Duration and Outcome: {correlation:.2f}")
 
     return correlation
+
+
+# driver code
+
+def main():
+    file_path = 'path_to_your_dataset.csv'
+
+    print("\n--- Average Treatment Cost by Disease ---")
+    try:
+        avg_costs = average_treatment_cost_by_disease(file_path)
+        print(avg_costs)
+    except ValueError as e:
+        print(e)
+
+    print("\n--- Identifying High-Risk Patients for a Specific Disease ---")
+    try:
+        disease = 'Heart Disease'  # Replace with a disease name in your dataset
+        high_risk_patients = identify_high_risk_patients(file_path, disease, age_threshold=60)
+        print(high_risk_patients)
+    except ValueError as e:
+        print(e)
+
+    print("\n--- Correlation Between Treatment Duration and Outcome ---")
+    try:
+        correlation = correlation_treatment_duration_outcome(file_path)
+        print(f"Correlation: {correlation:.2f}")
+    except ValueError as e:
+        print(e)
+
+if __name__ == "__main__":
+    main()
