@@ -7,7 +7,7 @@ def average_treatment_cost_by_disease(file_path):
     df = pd.read_csv(file_path)
 
     if 'Medical Condition' not in df.columns or 'Billing Amount' not in df.columns:
-        raise ValueError("The dataset must contain 'Disease' and 'Treatment_Cost' columns.")
+        raise ValueError("The dataset must contain 'Medical Condition' and 'Billing Amount' columns.")
 
     average_costs = df.groupby('Medical Condition')['Billing Amount'].mean()
 
@@ -16,14 +16,15 @@ def average_treatment_cost_by_disease(file_path):
 
     return average_costs
 
-#identifying high risk patients for a specific disease
-def identify_high_risk_patients(file_path, disease, age_threshold=60):
+#identifying high risk patients based on age and admission type
+def identify_high_risk_patients(file_path, disease, age_threshold):
     df = pd.read_csv(file_path)
+    if 'Medical Condition' not in df.columns or 'Age' not in df.columns or 'Admission Type' not in df.columns:
+        raise ValueError("The dataset must contain 'Medical Condition', 'Age', 'Admission Type' and 'Test Results' columns.")
 
-    if 'Medical Condition' not in df.columns or 'Age' not in df.columns:
-        raise ValueError("The dataset must contain 'Disease' and 'Age' columns.")
+    high_risk_patients = df[(df['Medical Condition'] == disease) & (df['Age'] > age_threshold) & (df['Admission Type'] == 'Emergency') & (df['Test Results'] == 'Abnormal')]
 
-    high_risk_patients = df[(df['Medical Condition'] == disease) & (df['Age'] > age_threshold)]
+    high_risk_patients = high_risk_patients[['Medical Condition', 'Age', 'Admission Type', 'Test Results']]
 
     print(f"High-Risk Patients for {disease}:")
     print(high_risk_patients)
@@ -71,12 +72,12 @@ def main():
     print("\n--- Identifying High-Risk Patients for a Specific Disease ---")
     try:
         disease = 'Cancer' 
-        high_risk_patients = identify_high_risk_patients(file_path, disease, age_threshold=60)
+        high_risk_patients = identify_high_risk_patients(file_path, disease, age_threshold=80)
         print(high_risk_patients)
     except ValueError as e:
         print(e)
 
-    print("\n--- Analyze billuing by insurance provider ---")
+    print("\n--- Analyze billing by insurance provider ---")
     try:
         correlation = analyze_billing_by_insurance_provider(file_path)
         print(f"Correlation: {correlation:.2f}")
