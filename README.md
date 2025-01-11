@@ -1,4 +1,4 @@
-# healthcareanalysisdata
+# HealthCareAnalysis
 Healtcare analysis of a healthcare dataset
 
 This project focuses on analyzing healthcare data to provide insights into treatment costs, high-risk patients, and billing patterns. The dataset is assumed to contain key columns such as medical conditions, age, admission type, billing amount, and test results, and the analysis is conducted using pandas, seaborn, and matplotlib for data processing and visualization.
